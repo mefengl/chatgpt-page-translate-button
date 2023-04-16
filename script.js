@@ -2,7 +2,7 @@
 // @name         chatgpt-page-translate-button
 // @description  🍓 let ChatGPT translate the web page you are reading in one click
 // @author       mefengl
-// @version      0.1.2
+// @version      0.1.3
 // @namespace    https://github.com/mefengl
 // @require      https://cdn.jsdelivr.net/npm/moz-readability@0.2.1/Readability.min.js
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=openai.com
@@ -287,7 +287,7 @@
         const paragraphs = getParagraphs_default();
         const prompt_texts = paragraphs.map((paragraph) => {
           return `${paragraph}
-translate above paragraph to Chinese:`;
+translate above paragraph to Chinese with compact and intuitive format:`;
         });
         GM_setValue(key, prompt_texts);
       });
