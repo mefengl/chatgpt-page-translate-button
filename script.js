@@ -2,9 +2,9 @@
 // @name         chatgpt-page-translate-button
 // @description  🍓 let ChatGPT translate the web page you are reading in one click
 // @author       mefengl
-// @version      0.1.9
+// @version      0.1.10
 // @namespace    https://github.com/mefengl
-// @require      https://raw.githubusercontent.com/mozilla/readability/main/Readability.js
+// @require      https://cdn.jsdelivr.net/npm/@mozilla/readability@0.4.3/Readability.min.js
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=openai.com
 // @license      MIT
 // @match        *://*/*
