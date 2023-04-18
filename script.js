@@ -2,7 +2,7 @@
 // @name         chatgpt-page-translate-button
 // @description  🍓 let ChatGPT translate the web page you are reading in one click
 // @author       mefengl
-// @version      0.1.4
+// @version      0.1.8
 // @namespace    https://github.com/mefengl
 // @require      https://cdn.jsdelivr.net/npm/moz-readability@0.2.1/Readability.min.js
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=openai.com
@@ -183,6 +183,50 @@
       }));
     }
   }
+  function getConversation() {
+    var _a, _b;
+    return (_b = (_a = document.querySelector('div[class^="react-scroll-to-bottom"]')) == null ? void 0 : _a.firstChild) == null ? void 0 : _b.firstChild;
+  }
+  function getModelSelectButton() {
+    const conversation = getConversation();
+    if (!conversation)
+      return;
+    return Array.from(conversation.querySelectorAll("button")).find((button) => {
+      var _a;
+      return (_a = button.textContent) == null ? void 0 : _a.trim().toLowerCase().includes("model");
+    });
+  }
+  function isConversationStarted() {
+    return !getModelSelectButton();
+  }
+  function setPureConversation() {
+    const conversation = getConversation();
+    if (!conversation)
+      return;
+    const firstChild = conversation.firstChild;
+    if (!firstChild)
+      return;
+    const newDiv = document.createElement("div");
+    conversation.insertBefore(newDiv, firstChild.nextSibling);
+  }
+  function isHorizontalConversation() {
+    const conversation = getConversation();
+    if (!conversation)
+      return true;
+    if (!isConversationStarted())
+      return true;
+    return conversation.classList.contains("grid");
+  }
+  function setHorizontalConversation() {
+    if (isHorizontalConversation())
+      return;
+    setPureConversation();
+    const conversation = getConversation();
+    if (!conversation)
+      return;
+    conversation.classList.remove("flex", "flex-col", "items-center");
+    conversation.classList.add("grid", "grid-cols-2", "place-items-center");
+  }
   var chatgpt = {
     getTextarea,
     getSubmitButton,
@@ -197,7 +241,13 @@
     onSend,
     isGenerating,
     waitForIdle,
-    setListener
+    setListener,
+    getConversation,
+    getModelSelectButton,
+    isConversationStarted,
+    setPureConversation,
+    isHorizontalConversation,
+    setHorizontalConversation
   };
   var chatgpt_default = chatgpt;
 
@@ -280,6 +330,9 @@
       if (article && article.textContent) {
         const segmenter = new SimpleArticleSegmentation_default(article.textContent);
         const paragraphs = segmenter.segment();
+        for (let i = 0; i < paragraphs.length; i++) {
+          paragraphs[i] = paragraphs[i].trim();
+        }
         return paragraphs;
       } else {
         console.warn("Readability.js could not extract any text content from this page.");
@@ -308,7 +361,8 @@
         const paragraphs = getParagraphs_default();
         const prompt_texts = paragraphs.map((paragraph) => {
           return `${paragraph}
-translate above paragraph to Chinese with compact and intuitive format:`;
+
+translate above paragraph to Chinese with compact and intuitive format (use Markdown syntax to optimize the display format):`;
         });
         GM_setValue(key, prompt_texts);
       });
